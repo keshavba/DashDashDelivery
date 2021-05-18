@@ -1,1 +1,3 @@
 # DashDashDelivery
+
+Hello! Dash Dash Delivery is an educational game on financial literacy for students on the autism spectrum. I have been working on this game since September 2020 as part of a team of 10 members. This research project has been led by Professors Benjamin Wagley and Amandeep Dhaliwal at UTA. I developed several systems for this game, such as the time, purchasing, and character customization systems. I also worked on a couple of in-game arcade games. This repository contains the code I wrote for the game. This game will be published to Steam in the upcoming month(s) so look out for that!
