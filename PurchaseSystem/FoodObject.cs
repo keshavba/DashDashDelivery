@@ -11,7 +11,7 @@ public class FoodObject : Interaction
 
     [HideInInspector] public bool vm_Purchased = false;
 
-    //Cooldown period for vending machines in real-time seconds
+    //Cooldown period for vending machines in real-time minutes
     [HideInInspector] public float notRestaurantObject = 1.5f.RealToGameTime();
 
     private RestaurantObjects restaurantObjectScript;
