@@ -66,9 +66,12 @@ public class CustomizationSearchPurchased : MonoBehaviour
         }
     }
 
-    public void SearchPurchasedMale(ObjectType objectType, ModelType model, string productName, Texture texture, Mesh mesh)
+    public void SearchPurchased(ObjectType objectType, ModelType model, string productName, Texture texture, Mesh mesh, bool male)
     {
-        lists = maleCustomizer.GetComponent<CharacterLists>();
+        if(male)
+            lists = maleCustomizer.GetComponent<CharacterLists>();
+        else
+            lists = femaleCustomizer.GetComponent<CharacterLists>();
 
         if(objectType == ObjectType.Model)
         {
@@ -278,23 +281,24 @@ public class CustomizationSearchPurchased : MonoBehaviour
         else
         {
             int wordCount = 0;
-            bool isFound = false;
             string name = "";
-
             string[] words = productName.Split(CharacterLists.delimeters);
             
             foreach(string word in words)
             {
                 wordCount++;
 
-                if(word.ToLower() == "logo")
+                if(word.ToLower() == "logo" || word.ToLower() == "sling" || word.ToLower() == "basic" || word.ToLower() == "backpack")
                 {
                     continue;
                 }
-
-                name += word;
-                if((words.Length - wordCount) > 1)
+                else if(word.ToLower() == "broken")
+                {
+                    name += word;
                     name += ' ';
+                }
+                else
+                    name += word;
             }
             
             for(int i = 0; i < lists.shirtCustomizer.Count; i++)
@@ -304,16 +308,10 @@ public class CustomizationSearchPurchased : MonoBehaviour
                     if(name.ToLower() == lists.shirtCustomizer[i].logos[j].textureName.ToLower())
                     {
                         lists.shirtCustomizer[i].logos[j].isPurchased = true;
-                        isFound = true;
                         break;
                     }
                 }
             }
-
-            if(!isFound)
-                Debug.Log("Improper naming of logo!");
-
-            isFound = false;
 
             for(int i = 0; i < lists.bPCustomizer.Count; i++)
             {   
@@ -322,281 +320,10 @@ public class CustomizationSearchPurchased : MonoBehaviour
                     if(name.ToLower() == lists.bPCustomizer[i].logos[j].textureName.ToLower())
                     {
                         lists.bPCustomizer[i].logos[j].isPurchased = true;
-                        isFound = true;
                         break;
                     }
                 }
             }
-
-            if(!isFound)
-                Debug.Log("Improper naming of logo!");
-        }
-    }
-
-    public void SearchPurchasedFemale(ObjectType objectType, ModelType model, string productName, Texture texture, Mesh mesh)
-    {
-        lists = femaleCustomizer.GetComponent<CharacterLists>();
-
-        if(objectType == ObjectType.Model)
-        {
-            if(model != ModelType.Shoe)
-            {
-                string[] modelWords = model.ToString().Split(CharacterLists.delimeters);
-                string modelName = "";
-                int count = 0;
-
-                foreach(string modelWord in modelWords)
-                {
-                    count++;
-                    modelName += modelWord;
-                    
-                    if((modelWords.Length - count) > 0)
-                        modelName += ' ';
-                }
-                
-                string[] textureWords = productName.Split(CharacterLists.delimeters);
-                bool remove = false;
-                string textureName = "";
-                count = 0;
-                
-                foreach(string word in textureWords)
-                {
-                    count++;
-
-                    remove = false;
-                    foreach(string modelWord in modelWords)
-                    {
-                        if(word.ToLower() == modelWord.ToLower())
-                        {
-                            remove = true;
-                            break;
-                        }
-                    }
-                    
-                    if(remove)
-                        continue;
-
-                    textureName += word;
-                }
-
-                string baseTextName = "";
-
-                if(model == ModelType.Short_Sleeved_Shirt || model == ModelType.Long_Sleeved_Shirt)
-                {
-                    for(int i = 0; i < lists.shirtCustomizer.Count; i++)
-                    {
-                        if(modelName.ToLower() == lists.shirtCustomizer[i].modelName.ToLower())
-                        {
-                            if(!lists.shirtCustomizer[i].isPurchased)
-                            {
-                                lists.shirtCustomizer[i].isPurchased = true;
-                            }
-                            
-                            for(int j = 0; j < lists.shirtCustomizer[i].baseTextures.Count; j++)
-                            {
-                                baseTextName = "";
-                                string[] textWords = lists.shirtCustomizer[i].baseTextures[j].textureName.Split(CharacterLists.delimeters);
-                                
-                                foreach(string word in textWords)
-                                {
-                                    baseTextName += word;
-                                }
-
-                                if(textureName.ToLower() == baseTextName.ToLower())
-                                {
-                                    lists.shirtCustomizer[i].baseTextures[j].isPurchased = true;
-                                    return;
-                                }
-                            }
-
-                            Debug.Log("Base texture has not been properly assigned!");
-                        }
-                    }
-                }
-
-                if(model == ModelType.Shorts || model == ModelType.Pants)
-                {
-                    for(int i = 0; i < lists.pantCustomizer.Count; i++)
-                    {
-                        if(modelName.ToLower() == lists.pantCustomizer[i].modelName.ToLower())
-                        {
-                            if(!lists.pantCustomizer[i].isPurchased)
-                            {
-                                lists.pantCustomizer[i].isPurchased = true;
-                            }
-                            
-                            for(int j = 0; j < lists.pantCustomizer[i].baseTextures.Count; j++)
-                            {
-                                baseTextName = "";
-                                string[] textWords = lists.pantCustomizer[i].baseTextures[j].textureName.Split(CharacterLists.delimeters);
-
-                                foreach(string word in textWords)
-                                {
-                                    baseTextName += word;
-                                }
-
-                                if(textureName.ToLower() == baseTextName.ToLower())
-                                {
-                                    lists.pantCustomizer[i].baseTextures[j].isPurchased = true;
-                                    return;
-                                }
-                            }
-                            
-                            Debug.Log("Base texture has not been properly assigned!");
-                        }
-                    }
-                }
-
-                if(model == ModelType.Basic_Backpack || model == ModelType.Sling_Backpack)
-                {
-                    for(int i = 0; i < lists.bPCustomizer.Count; i++)
-                    {
-                        if(modelName.ToLower() == lists.bPCustomizer[i].modelName.ToLower())
-                        {
-                            if(!lists.bPCustomizer[i].isPurchased)
-                            {
-                                lists.bPCustomizer[i].isPurchased = true;
-                            }
-                            
-                            for(int j = 0; j < lists.bPCustomizer[i].baseTextures.Count; j++)
-                            {
-                                if(texture == lists.bPCustomizer[i].baseTextures[j].texture)
-                                {
-                                    lists.bPCustomizer[i].baseTextures[j].isPurchased = true;
-                                    return;
-                                }
-                            }
-
-                            Debug.Log("Base texture has not been properly assigned!");
-                        }
-                    }
-                }
-            }
-            else
-            {
-                for(int i = 0; i < lists.shoeCustomizer.baseTextures.Count; i++)
-                {
-                    if(texture == lists.shoeCustomizer.baseTextures[i].texture)
-                    {
-                        lists.shoeCustomizer.baseTextures[i].isPurchased = true;
-                        return;
-                    }
-                }
-
-                Debug.Log("Base texture has not been properly assigned!");
-            }
-        }
-        else if(objectType == ObjectType.Pattern)
-        {
-            bool isFound = false;
-
-            for(int i = 0; i < lists.shirtCustomizer.Count; i++)
-            {   
-                for(int j = 0; j < lists.shirtCustomizer[i].patterns.Count; j++)
-                {
-                    if(texture == lists.shirtCustomizer[i].patterns[j].texture)
-                    {
-                        lists.shirtCustomizer[i].patterns[j].isPurchased = true;
-                        isFound = true;
-                        break;
-                    }
-                }
-            }
-
-            if(!isFound)
-                Debug.Log("Pattern has not been properly assigned!");
-
-            isFound = false;
-
-            for(int i = 0; i < lists.pantCustomizer.Count; i++)
-            {   
-                for(int j = 0; j < lists.pantCustomizer[i].patterns.Count; j++)
-                {
-                    if(texture == lists.pantCustomizer[i].patterns[j].texture)
-                    {
-                        lists.pantCustomizer[i].patterns[j].isPurchased = true;
-                        isFound = true;
-                        break;
-                    }
-                }
-            }
-
-            if(!isFound)
-                Debug.Log("Pattern has not been properly assigned!");
-                
-            isFound = false;
-
-            for(int i = 0; i < lists.bPCustomizer.Count; i++)
-            {   
-                for(int j = 0; j < lists.bPCustomizer[i].patterns.Count; j++)
-                {
-                    if(texture == lists.bPCustomizer[i].patterns[j].texture)
-                    {
-                        lists.bPCustomizer[i].patterns[j].isPurchased = true;
-                        isFound = true;
-                        break;
-                    }
-                }
-            }
-
-            if(!isFound)
-                Debug.Log("Pattern has not been properly assigned!");
-        }
-        else
-        {
-            int wordCount = 0;
-            bool isFound = false;
-            string name = "";
-
-            string[] words = productName.Split(CharacterLists.delimeters);
-            
-            foreach(string word in words)
-            {
-                wordCount++;
-
-                if(word.ToLower() == "logo")
-                {
-                    continue;
-                }
-
-                name += word;
-                if((words.Length - wordCount) > 1)
-                    name += ' ';
-            }
-            
-            for(int i = 0; i < lists.shirtCustomizer.Count; i++)
-            {
-                for(int j = 0; j < lists.shirtCustomizer[i].logos.Count; j++)
-                {
-                    if(name.ToLower() == lists.shirtCustomizer[i].logos[j].textureName.ToLower())
-                    {
-                        lists.shirtCustomizer[i].logos[j].isPurchased = true;
-                        isFound = true;
-                        break;
-                    }
-                }
-            }
-
-            if(!isFound)
-                Debug.Log("Improper naming of logo!");
-
-            isFound = false;
-
-            for(int i = 0; i < lists.bPCustomizer.Count; i++)
-            {   
-                for(int j = 0; j < lists.bPCustomizer[i].logos.Count; j++)
-                {
-                    if(name.ToLower() == lists.bPCustomizer[i].logos[j].textureName.ToLower())
-                    {
-                        lists.bPCustomizer[i].logos[j].isPurchased = true;
-                        isFound = true;
-                        break;
-                    }
-                }
-            }
-
-            if(!isFound)
-                Debug.Log("Improper naming of logo!");
         }
     }
 

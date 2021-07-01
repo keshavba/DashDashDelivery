@@ -98,8 +98,8 @@ public class ClothesPurchasing : Interaction
 
             moneyTracker.subtractFunds(price);
             
-            search.SearchPurchasedFemale(objectType, modelType, productName, texture, mesh);
-            search.SearchPurchasedMale(objectType, modelType, productName, texture, mesh);
+            search.SearchPurchased(objectType, modelType, productName, texture, mesh, true);
+            search.SearchPurchased(objectType, modelType, productName, texture, mesh, false);
 
             isPurchased = true;
 
